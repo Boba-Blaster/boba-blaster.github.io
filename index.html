@@ -1,64 +1,68 @@
-<div class="actions">
-<button id="themeToggle" class="btn icon-btn" aria-pressed="false" title="Toggle dark / light">
-🌙
-</button>
-<a class="btn primary" id="downloadBtn" href="https://7173-studios.itch.io/boba-blaster" target="_blank" rel="noopener">Download / Demo</a>
-</div>
-</header>
+<!-- index.html -->
 
+<!doctype html>
 
-<main>
-<section class="hero">
-<canvas id="heroCanvas" aria-hidden="true"></canvas>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Boba Blaster — Fast local multiplayer</title>
+  <meta name="description" content="Boba Blaster — fast-paced 2D local multiplayer game where you battle using bouncing boba pearls." />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="game_title">
+      <img src="assets/images/Boba Blaster.png" alt="Boba Blaster Logo" style="max-width:180px; display:block; margin:0 auto 10px;">
+      Boba Blaster
+    </div>
+  </header>
 
+  <main>
+    <section class="formatted_description">
+      <h2>Play local multiplayer — P1 vs P2</h2>
+      <p>Choose a colorful block, bounce pearls, blast your friend, and become the last one standing.</p>
 
-<div class="hero-card">
-<h2>Play local multiplayer — P1 vs P2</h2>
-<p class="lead">Choose a colorful block, bounce pearls, blast your friend, and become the last one standing.</p>
+```
+  <div class="cta-row">
+    <a class="btn" href="https://7173-studios.itch.io/boba-blaster" target="_blank" rel="noopener">Get Boba Blaster ($4.99)</a>
+    <a class="btn" href="https://7173-studios.itch.io/boba-blaster/rate" target="_blank" rel="noopener">Boba Blaster Lite (Free demo)</a>
+  </div>
 
-
-<div class="cta-row">
-<a class="btn large primary" href="https://7173-studios.itch.io/boba-blaster" target="_blank" rel="noopener">Get Boba Blaster ($4.99)</a>
-<a class="btn large" href="https://7173-studios.itch.io/boba-blaster/rate" target="_blank" rel="noopener">Boba Blaster Lite (Free demo)</a>
-</div>
-
-
-<div class="social">
-<a href="https://x.com/BBHooray" target="_blank" rel="noopener">Follow on X (Twitter)</a>
-</div>
-</div>
+  <div class="social" style="margin-top:15px;">
+    <a href="https://x.com/BBHooray" target="_blank" rel="noopener">Follow on X (Twitter)</a>
+  </div>
 </section>
 
-
-<section class="features" id="features">
-<h3>Features</h3>
-<ul>
-<li>Local multiplayer (P1 vs P2) — face-to-face battles</li>
-<li>Simple but addictive — easy to learn, hard to master</li>
-<li>Bright, playful visuals & clean UI</li>
-<li>Health system keeps matches tense until the last hit</li>
-</ul>
+<section class="post">
+  <h3>Features</h3>
+  <ul>
+    <li>Local multiplayer (P1 vs P2) — face-to-face battles</li>
+    <li>Simple but addictive — easy to learn, hard to master</li>
+    <li>Bright, playful visuals & clean UI</li>
+    <li>Health system keeps matches tense until the last hit</li>
+  </ul>
 </section>
 
-
-<section class="preview">
-<h3>Animated preview</h3>
-<p>Small interactive preview of bouncing boba pearls (non-gameplay):</p>
-<div class="preview-canvas-wrap">
-<canvas id="previewCanvas" aria-label="Animated preview: bouncing pearl particles"></canvas>
-</div>
+<section class="post">
+  <h3>Animated preview</h3>
+  <p>Small interactive preview of bouncing boba pearls (non-gameplay):</p>
+  <canvas id="previewCanvas" aria-label="Animated preview: bouncing pearl particles" style="width:100%; height:220px; border-radius:12px; background:rgba(255,255,255,0.06);"></canvas>
 </section>
 
-
-<section class="about">
-<h3>About</h3>
-<p>Boba Blaster is a fast-paced, 2D local multiplayer game where you battle using bouncing boba pearls! Choose your colorful block character and face off against a friend in chaotic duels filled with dodging, jumping, and blasting. Each shot you land reduces your opponent’s HP — but watch out, because one wrong move could turn the tables. 🎮</p>
+<section class="post">
+  <h3>About</h3>
+  <p>Boba Blaster is a fast-paced, 2D local multiplayer game where you battle using bouncing boba pearls! Choose your colorful block character and face off against a friend in chaotic duels filled with dodging, jumping, and blasting. Each shot you land reduces your opponent’s HP — but watch out, because one wrong move could turn the tables. 🎮</p>
 </section>
+```
 
+  </main>
 
-</main>
+  <footer class="site-footer" style="text-align:center; margin:30px 0; color:#aaa;">
+    <small>© 2025 7173 Studios — <a href="https://7173-studios.itch.io/boba-blaster" target="_blank" rel="noopener">Boba Blaster on itch.io</a></small>
+  </footer>
 
+  <script src="script.js"></script>
 
-<footer class="site-footer">
-<small>© 2025 7173 Studios — <a href="https://7173-studios.itch.io/boba-blaster" target="_blank" rel="noopener">Boba Blaster on itch.io</a></small>
-</footer>
+</body>
+</html>
