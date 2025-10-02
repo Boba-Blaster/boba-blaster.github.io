@@ -69,4 +69,194 @@
   <script src="script.js"></script>
 
 </body>
+  <!-- Put this near the end of <body> so DOM is loaded -->
+<style>
+  /* Minimal modal for when adblock is detected */
+  #adblock-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+  }
+  #adblock-modal .card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: min(520px, 92%);
+    text-align: center;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  #adblock-modal h2 { margin: 0 0 8px; font-size: 1.3rem; }
+  #adblock-modal p { margin: 8px 0 16px; color: #444; }
+  #adblock-modal .btn {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 6px;
+  }
+  .btn-primary { background: #0b84ff; color: white; }
+  .btn-ghost { background: #f3f3f3; color: #111; }
+</style>
+
+<!-- Adblock modal (hidden by default) -->
+<div id="adblock-modal" role="dialog" aria-modal="true">
+  <div class="card">
+    <h2>Hey fellow gamer — adblock detected</h2>
+    <p>We use a few ads to keep development going. Please consider whitelisting <strong>boba-blaster.retry254@silomails.com</strong> or <strong>this site</strong> — or support us with a one-time buy so we can ship more updates.</p>
+    <div>
+      <a class="btn btn-primary" id="support-btn" href="https://boba-blaster.github.io">Support / Buy</a>
+      <a class="btn btn-ghost" id="dismiss-btn" href="#" role="button">Continue anyway</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  Adblock Detector v1.2 (vanilla JS)
+  Methods used:
+    - Bait element (common ad CSS classes/ids)
+    - Attempt to fetch a resource with "ads" in filename
+    - Attempt to load a script with a common ad url pattern
+  Usage:
+    adblockDetector({
+      onDetect: () => { /* show modal or change CTA */ },
+      onClean:  () => { /* continue normal flow (ads permitted) */ }
+    });
+*/
+
+function adblockDetector(opts = {}) {
+  const onDetect = opts.onDetect || (() => {});
+  const onClean = opts.onClean || (() => {});
+  const timeout = opts.timeout || 1500;
+
+  // 1) Bait element: insert an element with ad-like classes and inspect styles
+  function baitTest() {
+    return new Promise((resolve) => {
+      const bait = document.createElement('div');
+      // adblockers block elements with common identifiers
+      bait.className = 'ad ad-banner ad_unit adsbox text-ad';
+      bait.id = 'adsense_test_ad';
+      // make it visible on purpose
+      bait.style.width = '1px';
+      bait.style.height = '1px';
+      bait.style.position = 'absolute';
+      bait.style.left = '-9999px';
+      document.body.appendChild(bait);
+
+      // Give browser one tick to apply styles
+      requestAnimationFrame(() => {
+        const baitStyle = window.getComputedStyle(bait);
+        const blocked = (
+          baitStyle && (
+            baitStyle.display === 'none'
+            || baitStyle.visibility === 'hidden'
+            || bait.offsetParent === null
+            || bait.offsetHeight === 0
+            || bait.clientHeight === 0
+          )
+        );
+        document.body.removeChild(bait);
+        resolve(blocked);
+      });
+    });
+  }
+
+  // 2) Fetch test: try fetching a resource that adblockers block by pattern
+  function fetchTest() {
+    return new Promise((resolve) => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => { controller.abort(); resolve(true); }, timeout);
+      fetch('/ads.js', { method: 'GET', signal: controller.signal, cache: 'no-store' })
+        .then((r) => {
+          clearTimeout(timer);
+          // If fetch returns 200 -> probably allowed. 404 or network error -> could be blocked.
+          resolve(!(r && r.ok)); // resolve true if blocked / not ok
+        })
+        .catch(() => { clearTimeout(timer); resolve(true); });
+    });
+  }
+
+  // 3) Script load test: dynamically add a script tag with "ads" in URL
+  function scriptLoadTest() {
+    return new Promise((resolve) => {
+      const s = document.createElement('script');
+      s.src = '/ads-loader.js'; // a benign endpoint that typically gets blocked by adblockers
+      s.async = true;
+      let resolved = false;
+      const timer = setTimeout(() => { if (!resolved) { resolved = true; cleanup(); resolve(true); }}, timeout);
+
+      function cleanup() {
+        s.onerror = null;
+        s.onload = null;
+        if (s.parentNode) s.parentNode.removeChild(s);
+        clearTimeout(timer);
+      }
+
+      s.onload = () => { if (!resolved) { resolved = true; cleanup(); resolve(false); } };
+      s.onerror = () => { if (!resolved) { resolved = true; cleanup(); resolve(true); } };
+
+      (document.head || document.documentElement).appendChild(s);
+    });
+  }
+
+  // Run tests in parallel, but bail early if any detects block
+  return Promise.all([baitTest(), fetchTest(), scriptLoadTest()]).then(results => {
+    // results is array of booleans where true -> blocked/suspected
+    const blockedScore = results.filter(Boolean).length;
+    // If at least one test is positive, treat as adblock for stronger detection
+    if (blockedScore > 0) {
+      onDetect({results, blockedScore});
+      return {adblock: true, results, blockedScore};
+    } else {
+      onClean({results});
+      return {adblock: false, results, blockedScore};
+    }
+  });
+}
+
+
+/* Example usage: show the modal when adblock is detected, fallback if not */
+(function initAdblockUI(){
+  const modal = document.getElementById('adblock-modal');
+  const dismiss = document.getElementById('dismiss-btn');
+  const support = document.getElementById('support-btn');
+
+  function showModal() {
+    modal.style.display = 'flex';
+    // slightly focus UX
+    modal.querySelector('.card').focus?.();
+  }
+  function hideModal() {
+    modal.style.display = 'none';
+  }
+
+  adblockDetector({
+    timeout: 1400,
+    onDetect: ({results, blockedScore}) => {
+      console.log('Adblock suspected. detector results:', results, 'score:', blockedScore);
+      showModal();
+      // Optional: send an analytics event to your server
+      // fetch('/analytics/adblock?detected=1', {method:'POST'}).catch(()=>{});
+    },
+    onClean: () => {
+      console.log('No adblock detected. normal flow.');
+      // If you want to show ads or trackers, do that now.
+    }
+  }).catch(err => {
+    console.error('Adblock detector error:', err);
+  });
+
+  dismiss.addEventListener('click', (e) => { e.preventDefault(); hideModal(); });
+  support.addEventListener('click', () => {
+    // could open a payment modal / itch.io link / or deep link to buy
+    // for now it follows the href
+    hideModal();
+  });
+})();
+</script>
 </html>
