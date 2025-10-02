@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boba Blaster Studio</title>
+    <link rel="stylesheet" href="style.css"> <!-- Frutiger Aero theme -->
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Boba Blaster Studio v0.0.0</h1>
+        <p>The developer’s playground for the Boba Blaster universe. Edit variables, map controllers, and explore beta features.</p>
+    </header>
+
+    <!-- Beta Notice -->
+    <div class="beta-notice">
+        ⚠️ Early Alpha / Beta Release — Features are limited and subject to change.
+    </div>
+
+    <!-- Features Section -->
+    <section>
+        <h2>Features</h2>
+        <ul>
+            <li><span class="feature-highlight">Change Variables:</span> p1Color, p2Color, p1HP, p2HP, bobaColor</li>
+            <li><span class="feature-highlight">Reload Game:</span> instantly to test changes</li>
+            <li><span class="feature-highlight">Seed & Number of Trees:</span> snapshot features, changes require reload</li>
+            <li><span class="feature-highlight">Developer Console:</span> logs reloading actions</li>
+            <li><span class="feature-highlight">Gamepad Support:</span> fully mappable buttons with optional rumble</li>
+        </ul>
+    </section>
+
+    <!-- Screenshots -->
+    <section>
+        <h2>Screenshots</h2>
+        <img src="screenshot1.png" alt="Studio Screenshot 1">
+        <img src="screenshot2.png" alt="Studio Screenshot 2">
+    </section>
+
+    <!-- Developer Console Mockup -->
+    <section>
+        <h2>Developer Console</h2>
+        <pre id="output">
+Copyright 7173 STUDIOS Software Do Not Copy
+        </pre>
+    </section>
+
+    <!-- Buttons -->
+    <section>
+        <h2>Get the Studio</h2>
+        <a href="https://7173-studios.itch.io/boba-blaster-studio" class="button">Buy Now $29.99</a>
+        <a href="https://7173-studios.itch.io/boba-blaster-studio" class="button">Download Snapshot $9.99</a>
+        <a href="https://7173-studios.itch.io/boba-blaster-studio" class="button">Original Game $4.99</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2025 7173 STUDIOS. All rights reserved.
+    </footer>
+
+    <!-- Optional JS to simulate console output -->
+    <script>
+        // Example: add message to output
+        function logOutput(message) {
+            const output = document.getElementById('output');
+            output.textContent += '\n' + message;
+        }
+
+        // Simulate reloading
+        function reloadGame() {
+            logOutput('Game reloaded!');
+        }
+    </script>
+
+</body>
+</html>
